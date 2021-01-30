@@ -1245,4 +1245,8 @@ IGNORED is the rest of the arguments, not sure why it's there."
 
 (provide 'neuron-mode)
 
+(defun say-hi ()
+  (interactive)
+  (message "hello"))
+
 ;;; neuron-mode.el ends here
