@@ -84,7 +84,7 @@ and returns the desired ID."
            (symbol   :tag "Let neuron handle the ID creation using CLI arguments")
            (function :tag "Function taking the title as argument and returning an ID")))
 
-(defcustom neuron-title-format "# %s"
+(defcustom neuron-title-format "%s"
   "Format of title of a new zettel note.
 This format string will be run through `format' (with title
 as argument) to populate the new zettel"
