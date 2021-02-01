@@ -203,7 +203,7 @@ This function is called by `neuron-create-zettel-from-selected-title' to
 generate a title for the new zettel, it passes the selected text as
 an argument.")
 
-(defvar neuron-show-ids nil
+(defvar neuron-show-ids t
   "Whether to show IDs next to zettel titles.
 Applies both in neuron-mode buffers and in the completion minibuffer when
 selecting a zettel. Can be toggled using `neuron-toggle-id-visibility'.")
