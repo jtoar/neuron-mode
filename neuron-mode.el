@@ -413,10 +413,8 @@ If NO-DEFAULT-TAGS is non-nil, don't add the tags specified the variable
         (unless no-default-tags
           (dolist (tag neuron-default-tags)
             (neuron-add-tag tag)))
-        (when title
-          (goto-char (point-max))
-          (newline)
-          (insert (format neuron-title-format title)))
+        (goto-char (point-max))
+        (newline)
         (save-buffer))
       (neuron--rebuild-cache)
       (message "Created %s" (f-filename path))
