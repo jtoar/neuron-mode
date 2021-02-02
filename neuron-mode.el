@@ -1246,8 +1246,8 @@ IGNORED is the rest of the arguments, not sure why it's there."
 (provide 'neuron-mode)
 
 ;;;###autoload
-(defun say-hi ()
-  "Say hi."
+(defun pwd-test ()
+  "Test what the pwd is."
   (interactive)
   (message "hi"))
 
