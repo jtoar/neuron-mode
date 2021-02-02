@@ -221,6 +221,11 @@ functions when we know that the zettelkasten was just updated.")
 When no neuron.dhall file was found, return nil."
   (let ((is-zk (lambda (dir) (f-exists? (f-join "/" dir "neuron.dhall")))))
     (f-traverse-upwards is-zk pwd)))
+;; ok i think i get this...
+;; let creates a local var... and it's like (let varlist body), where varlist is ((variable value)).
+;; hence the "extra" parenthesis.
+;; is-zk takes a dir and see if it's a zk by checking if there's a file named neuron.dhall.
+;; and then it goes up...
 
 (defun neuron--get-zettelkasten (&optional pwd)
   "Return the location of the current zettelkasten.
@@ -235,6 +240,9 @@ an actual directory, return nil."
    (neuron--detect-zettelkasten pwd)
    (let ((root neuron-default-zettelkasten-directory))
      (and (f-exists? root) (f-directory? root) neuron-default-zettelkasten-directory))))
+;; not sure what (interactive "P") means...
+;; but, this goes up from the pwd to see if there's a zk along the way...
+;; if there's not, it looks in root...
 
 (defun neuron--update-current-zettelkasten (root)
   "Update `neuron--current-zettelkasten' with the new value ROOT.
@@ -249,10 +257,12 @@ Refresh the zettel cache if the value has changed."
            (not neuron--current-zettelkasten))
       (neuron--rebuild-cache))
     neuron--current-zettelkasten))
+;; yep; let's everywhere...
 
 (defun neuron--pop-to-buffer-same-window (buffer)
   (xref-push-marker-stack)
   (pop-to-buffer-same-window buffer))
+;; ???
 
 ;;;###autoload
 (defun neuron-zettelkasten (&optional pwd)
@@ -286,6 +296,8 @@ existing directory, throw an user error."
    (mapconcat
     #'shell-quote-argument
     (append (list "-d" neuron--current-zettelkasten cmd) args) " ")))
+;; this is an imp one...
+;; could make a command that makes and moves... like neuron new && ...
 
 (defun neuron--make-query-uri-command (uri)
   "Construct a neuron query command that queries the zettelkasten from URI.
@@ -304,6 +316,7 @@ returned as a string."
         (string-trim-right output)
       (and (user-error "Command \"%s\" exited with code %d: %s" cmd exit-code output)
            nil))))
+;; let*'s like recursive let. nix set style recursion.
 
 (defun neuron--read-query-result (output)
   "Parse the OUTPUT of a query command in JSON.
@@ -330,6 +343,7 @@ Extract only the result itself, so the query type is lost."
   (let ((zettels (neuron--query-url-command "z:zettels"))
         (assoc-id (lambda (zettel) (cons (intern (map-elt zettel 'zettelID)) zettel))))
     (setq neuron--zettel-cache (mapcar assoc-id zettels))))
+;; this one might need some looking into...
 
 (defun neuron-list-buffers ()
   "Return the list of all open neuron-mode buffers in the current zettelkasten."
@@ -357,6 +371,7 @@ Extract only the result itself, so the query type is lost."
                      (with-current-buffer buffer (neuron--name-buffer)))
                    (message "Regenerated zettel cache")))
                "neuron-refresh"))
+;; yeah this one...
 
 (defun neuron--is-valid-id (id)
   "Check whether the ID is a valid neuron zettel ID.
@@ -379,14 +394,16 @@ Valid IDs should be strings of alphanumeric characters."
                     (user-error "Invalid zettel ID: %S" id)))))))
   (let ((args (if id (list id) nil)))
     (apply #'neuron--make-command "new" args)))
+;; this one...
 
-(defun neuron-create-zettel-buffer (title &optional id no-default-tags)
+(defun neuron-create-zettel-buffer (&optional title id no-default-tags)
     "Create a new zettel in the current zettelkasten.
 The new zettel will be generated with the given TITLE and ID if specified.
 When TITLE is nil, prompt the user.
 If NO-DEFAULT-TAGS is non-nil, don't add the tags specified the variable
 `neuron-default-tags'."
-  (interactive (list (read-string "Title: ")))
+  ;; (interactive (list (read-string "Title: ")))
+  (interactive)
   (neuron-check-if-zettelkasten-exists)
   (when (or (not id) (and id (not (neuron--get-cached-zettel-from-id id))))
     (let* ((cmd     (neuron--make-new-command id title))
