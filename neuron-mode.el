@@ -408,7 +408,9 @@ If NO-DEFAULT-TAGS is non-nil, don't add the tags specified the variable
   (when (or (not id) (and id (not (neuron--get-cached-zettel-from-id id))))
     (let* ((cmd     (neuron--make-new-command id title))
            (path    (neuron--run-command cmd))
-           (buffer  (find-file-noselect path)))
+           (move-to (f-join default-directory (f-filename path)))
+           (buffer  (progn (f-move path move-to)
+                           (find-file-noselect move-to))))
       (with-current-buffer buffer
         (unless no-default-tags
           (dolist (tag neuron-default-tags)
@@ -417,7 +419,7 @@ If NO-DEFAULT-TAGS is non-nil, don't add the tags specified the variable
         (newline)
         (save-buffer))
       (neuron--rebuild-cache)
-      (message "Created %s" (f-filename path))
+      (message "Created %s" (f-filename move-to))
       buffer)))
 
 (defun neuron--name-buffer ()
